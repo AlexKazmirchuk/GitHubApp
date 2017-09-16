@@ -1,6 +1,7 @@
 package com.alexkaz.githubapp.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.alexkaz.githubapp.R;
 import com.alexkaz.githubapp.model.entities.ShortUserEntity;
+import com.alexkaz.githubapp.view.UserReposActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -75,6 +77,11 @@ public class UserRVAdapter extends RecyclerView.Adapter<UserRVAdapter.UserVH> {
             context = v.getContext();
             userPhotoIV = v.findViewById(R.id.userPhotoIV);
             userNameTV = v.findViewById(R.id.userNameTV);
+            v.findViewById(R.id.relativeLayout).setOnClickListener(event -> {
+                Intent intent = new Intent(context, UserReposActivity.class);
+                intent.putExtra("userName", userNameTV.getText().toString());
+                context.startActivity(intent);
+            });
         }
     }
 }
