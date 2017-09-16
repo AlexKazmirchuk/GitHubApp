@@ -18,9 +18,9 @@ public interface GitHubApi {
     @GET("users")
     Observable<List<ShortUserEntity>> getUsers(@Query("since") int since, @Query("per_page") int perPage);
 
-    @GET("users/{user}")
-    Observable<UserEntity> getUser(@Path("user") String user);
+    @GET("users/{username}")
+    Observable<UserEntity> getUser(@Path("username") String username);
 
-    @GET("users/{user}/repos")
-    Observable<List<RepoEntity>> getUserRepos(@Path("user") String user, @Query("page") int page, @Query("per_page") int perPage);
+    @GET("users/{username}/repos")
+    Observable<List<RepoEntity>> getUserRepos(@Path("username") String username, @Query("page") int page, @Query("per_page") int perPage);
 }
