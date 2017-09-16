@@ -50,17 +50,21 @@ public class UsersActivity extends AppCompatActivity implements UsersView {
         recyclerView = findViewById(R.id.recycleView);
         noConnView = findViewById(R.id.noConnLayout);
 
-        presenter.bindView(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new UserRVAdapter();
         recyclerView.setAdapter( new ScaleInAnimationAdapter( new AlphaInAnimationAdapter(adapter)));
 
+        presenter.bindView(this);
+        presenter.restoreState();
+
         Paginate.Callbacks callbacks = new Paginate.Callbacks() {
             @Override
             public void onLoadMore() {
-                presenter.loadNextPage();
-                loadingInProgress = true;
+                if (adapter.getItemCount() > 0){
+                    presenter.loadNextPage();
+                    loadingInProgress = true;
+                }
             }
 
             @Override
@@ -104,8 +108,9 @@ public class UsersActivity extends AppCompatActivity implements UsersView {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
+        presenter.saveState(adapter.getItems());
         presenter.reset();
     }
 

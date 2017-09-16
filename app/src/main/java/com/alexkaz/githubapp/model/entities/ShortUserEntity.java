@@ -2,7 +2,9 @@ package com.alexkaz.githubapp.model.entities;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ShortUserEntity {
+import io.realm.RealmObject;
+
+public class ShortUserEntity extends RealmObject {
 
     @SerializedName("login")
     private String login;

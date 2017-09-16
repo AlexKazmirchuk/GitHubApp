@@ -41,6 +41,7 @@ public class UserRVAdapter extends RecyclerView.Adapter<UserRVAdapter.UserVH> {
 
     public void clear(){
         users.clear();
+        notifyDataSetChanged();
     }
 
     @Override

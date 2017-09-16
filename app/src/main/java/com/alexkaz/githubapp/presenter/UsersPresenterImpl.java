@@ -1,8 +1,14 @@
 package com.alexkaz.githubapp.presenter;
 
+import android.util.Log;
+
+import com.alexkaz.githubapp.model.entities.ShortUserEntity;
 import com.alexkaz.githubapp.model.services.ConnInfoHelper;
 import com.alexkaz.githubapp.model.services.GitHubService;
+import com.alexkaz.githubapp.model.services.RealmHelper;
 import com.alexkaz.githubapp.view.UsersView;
+
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 
@@ -11,6 +17,7 @@ public class UsersPresenterImpl implements UsersPresenter {
     private UsersView view;
     private GitHubService gitHubService;
     private ConnInfoHelper connInfoHelper;
+    private RealmHelper realmHelper;
 
     private int since = 0;
 
@@ -18,9 +25,10 @@ public class UsersPresenterImpl implements UsersPresenter {
 
     private boolean usersLoaded = false;
 
-    public UsersPresenterImpl(GitHubService gitHubService, ConnInfoHelper connInfoHelper) {
+    public UsersPresenterImpl(GitHubService gitHubService, ConnInfoHelper connInfoHelper, RealmHelper realmHelper) {
         this.gitHubService = gitHubService;
         this.connInfoHelper = connInfoHelper;
+        this.realmHelper = realmHelper;
     }
 
     @Override
@@ -31,8 +39,8 @@ public class UsersPresenterImpl implements UsersPresenter {
     @Override
     public void refresh() {
         if (connInfoHelper.isOnline()){
-            reset();
             view.clearUpList();
+            reset();
             view.hideRepos();
             loadNextPage();
         } else {
@@ -56,7 +64,7 @@ public class UsersPresenterImpl implements UsersPresenter {
                 view.showWarningMessage(throwable.getMessage());
             });
         } else {
-            if (!usersLoaded){
+            if (realmHelper.getAllUsers().isEmpty()){
                 view.showNoConnectionMessage();
             } else {
                 view.showWarningMessage("No internet connection!");
@@ -72,6 +80,22 @@ public class UsersPresenterImpl implements UsersPresenter {
             if (!disposable.isDisposed()){
                 disposable.dispose();
             }
+        }
+    }
+
+    @Override
+    public void saveState(List<ShortUserEntity> users) {
+        realmHelper.deleteAllShortUsers();
+        realmHelper.saveAllUsers(users);
+    }
+
+    @Override
+    public void restoreState() {
+        since = realmHelper.getLastUserID();
+        if (!realmHelper.getAllUsers().isEmpty()){
+            view.showUsers(realmHelper.getAllUsers());
+        } else {
+            loadNextPage();
         }
     }
 }
