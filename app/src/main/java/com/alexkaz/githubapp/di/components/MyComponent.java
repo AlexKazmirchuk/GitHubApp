@@ -4,6 +4,7 @@ import com.alexkaz.githubapp.di.modules.AppModule;
 import com.alexkaz.githubapp.di.modules.NetworkModule;
 import com.alexkaz.githubapp.di.modules.PresenterModule;
 import com.alexkaz.githubapp.view.UserReposActivity;
+import com.alexkaz.githubapp.view.UsersActivity;
 
 import javax.inject.Singleton;
 
@@ -15,4 +16,5 @@ import dagger.Component;
                       AppModule.class})
 public interface MyComponent {
     void inject(UserReposActivity activity);
+    void inject(UsersActivity activity);
 }

@@ -4,6 +4,8 @@ import com.alexkaz.githubapp.model.services.ConnInfoHelper;
 import com.alexkaz.githubapp.model.services.GitHubService;
 import com.alexkaz.githubapp.presenter.UserReposPresenter;
 import com.alexkaz.githubapp.presenter.UserReposPresenterImpl;
+import com.alexkaz.githubapp.presenter.UsersPresenter;
+import com.alexkaz.githubapp.presenter.UsersPresenterImpl;
 
 import javax.inject.Singleton;
 
@@ -19,4 +21,9 @@ public class PresenterModule {
         return new UserReposPresenterImpl(gitHubService, connInfoHelper);
     }
 
+    @Singleton
+    @Provides
+    UsersPresenter provideUsersPresenter(GitHubService gitHubService, ConnInfoHelper connInfoHelper){
+        return new UsersPresenterImpl(gitHubService, connInfoHelper);
+    }
 }
