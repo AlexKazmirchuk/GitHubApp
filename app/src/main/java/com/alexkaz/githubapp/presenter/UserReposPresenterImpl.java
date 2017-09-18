@@ -1,7 +1,5 @@
 package com.alexkaz.githubapp.presenter;
 
-import android.util.Log;
-
 import com.alexkaz.githubapp.model.entities.RepoEntity;
 import com.alexkaz.githubapp.model.entities.UserEntity;
 import com.alexkaz.githubapp.model.services.ConnInfoHelper;
@@ -84,7 +82,6 @@ public class UserReposPresenterImpl implements UserReposPresenter {
             }, throwable -> {
                 view.hideLoading();
                 view.showWarningMessage(throwable.getMessage());
-                throwable.printStackTrace();
             });
         } else {
             if (!userInfoLoaded && !repoListLoaded){
@@ -155,6 +152,8 @@ public class UserReposPresenterImpl implements UserReposPresenter {
                 repoListLoaded  = true;
                 page = repos.size()/PER_PAGE + 1;
             }
+        } else {
+            loadNextPage();
         }
     }
 }

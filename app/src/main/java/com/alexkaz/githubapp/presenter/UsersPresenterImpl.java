@@ -1,7 +1,5 @@
 package com.alexkaz.githubapp.presenter;
 
-import android.util.Log;
-
 import com.alexkaz.githubapp.model.entities.ShortUserEntity;
 import com.alexkaz.githubapp.model.services.ConnInfoHelper;
 import com.alexkaz.githubapp.model.services.GitHubService;
@@ -22,8 +20,6 @@ public class UsersPresenterImpl implements UsersPresenter {
     private int since = 0;
 
     private Disposable disposable;
-
-    private boolean usersLoaded = false;
 
     public UsersPresenterImpl(GitHubService gitHubService, ConnInfoHelper connInfoHelper, RealmHelper realmHelper) {
         this.gitHubService = gitHubService;
@@ -75,7 +71,6 @@ public class UsersPresenterImpl implements UsersPresenter {
     @Override
     public void reset() {
         since = 0;
-        usersLoaded = false;
         if (disposable != null ){
             if (!disposable.isDisposed()){
                 disposable.dispose();

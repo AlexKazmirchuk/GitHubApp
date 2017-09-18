@@ -111,7 +111,6 @@ public class UsersActivity extends AppCompatActivity implements UsersView {
     protected void onStop() {
         super.onStop();
         presenter.saveState(adapter.getItems());
-        presenter.reset();
     }
 
     @Override

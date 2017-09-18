@@ -1,11 +1,9 @@
 package com.alexkaz.githubapp.view;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +19,6 @@ import com.alexkaz.githubapp.ui.RepoRVAdapter;
 import com.alexkaz.githubapp.ui.UserInfoView;
 import com.paginate.Paginate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -51,7 +48,7 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
         ((MyApp)getApplication()).getMyComponent().inject(this);
         configureActionBar();
 
-        initComponents(state);
+        initComponents();
     }
 
     private void configureActionBar(){
@@ -60,7 +57,7 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
         }
     }
 
-    private void initComponents(Bundle state){
+    private void initComponents(){
         progressBar = findViewById(R.id.userReposPB);
         noConnView = findViewById(R.id.noConnLayout);
         userInfoView = findViewById(R.id.userInfoView);
@@ -71,28 +68,6 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
         adapter = new RepoRVAdapter();
         repoListRV.setAdapter( new ScaleInAnimationAdapter( new AlphaInAnimationAdapter(adapter)));
 
-//        if (state != null){
-//            if (state.getParcelable("user_info") != null){
-//                userInfoView.setValues(state.getParcelable("user_info"));
-//                userInfoView.setVisibility(View.VISIBLE);
-//            }
-//
-//            adapter.add(state.getParcelableArrayList("list"));
-//            adapter.notifyDataSetChanged();
-//            loadingInProgress = state.getBoolean("loadingInProgress");
-//            hasLoadedAllItems = state.getBoolean("hasLoadedAllItems");
-//            if (state.getBoolean("progressBar_showed", false)){
-//                showLoading();
-//            } else {
-//                hideLoading();
-//            }
-//            if (state.getBoolean("noConnView_showed", false)){
-//                showNoConnectionMessage();
-//            } else {
-//                hideNoConnectionMessage();
-//            }
-//        }
-
         presenter.bindView(this);
         presenter.setUserName(getIntent().getStringExtra("userName"));
         presenter.restore();
@@ -100,8 +75,10 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
         Paginate.Callbacks callbacks = new Paginate.Callbacks() {
             @Override
             public void onLoadMore() {
-                presenter.loadNextPage();
-                loadingInProgress = true;
+                if (adapter.getItemCount() > 0){
+                    presenter.loadNextPage();
+                    loadingInProgress = true;
+                }
             }
 
             @Override
@@ -142,17 +119,6 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
         }
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putParcelable("user_info", userInfoView.getValues());
-//        outState.putParcelableArrayList("list", (ArrayList<? extends Parcelable>) adapter.getItems());
-//        outState.putBoolean("loadingInProgress",loadingInProgress);
-//        outState.putBoolean("hasLoadedAllItems",hasLoadedAllItems);
-//        outState.putBoolean("progressBar_showed", progressBar.isShown());
-//        outState.putBoolean("noConnView_showed", noConnView.isShown());
-//    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -162,7 +128,8 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.save(userInfoView.getValues(), adapter.getItems());
+        if (userInfoView.getValues() != null)
+            presenter.save(userInfoView.getValues(), adapter.getItems());
     }
 
     @Override
