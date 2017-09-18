@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,11 +52,6 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
         configureActionBar();
 
         initComponents(state);
-
-        if (state == null){
-            presenter.loadUserInfo();
-        }
-
     }
 
     private void configureActionBar(){
@@ -70,34 +66,36 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
         userInfoView = findViewById(R.id.userInfoView);
         repoListRV = findViewById(R.id.repoListRV);
 
-        presenter.bindView(this);
-        presenter.setUserName(getIntent().getStringExtra("userName"));
 
         repoListRV.setLayoutManager(new LinearLayoutManager(this));
         adapter = new RepoRVAdapter();
         repoListRV.setAdapter( new ScaleInAnimationAdapter( new AlphaInAnimationAdapter(adapter)));
 
-        if (state != null){
-            if (state.getParcelable("user_info") != null){
-                userInfoView.setValues(state.getParcelable("user_info"));
-                userInfoView.setVisibility(View.VISIBLE);
-            }
+//        if (state != null){
+//            if (state.getParcelable("user_info") != null){
+//                userInfoView.setValues(state.getParcelable("user_info"));
+//                userInfoView.setVisibility(View.VISIBLE);
+//            }
+//
+//            adapter.add(state.getParcelableArrayList("list"));
+//            adapter.notifyDataSetChanged();
+//            loadingInProgress = state.getBoolean("loadingInProgress");
+//            hasLoadedAllItems = state.getBoolean("hasLoadedAllItems");
+//            if (state.getBoolean("progressBar_showed", false)){
+//                showLoading();
+//            } else {
+//                hideLoading();
+//            }
+//            if (state.getBoolean("noConnView_showed", false)){
+//                showNoConnectionMessage();
+//            } else {
+//                hideNoConnectionMessage();
+//            }
+//        }
 
-            adapter.add(state.getParcelableArrayList("list"));
-            adapter.notifyDataSetChanged();
-            loadingInProgress = state.getBoolean("loadingInProgress");
-            hasLoadedAllItems = state.getBoolean("hasLoadedAllItems");
-            if (state.getBoolean("progressBar_showed", false)){
-                showLoading();
-            } else {
-                hideLoading();
-            }
-            if (state.getBoolean("noConnView_showed", false)){
-                showNoConnectionMessage();
-            } else {
-                hideNoConnectionMessage();
-            }
-        }
+        presenter.bindView(this);
+        presenter.setUserName(getIntent().getStringExtra("userName"));
+        presenter.restore();
 
         Paginate.Callbacks callbacks = new Paginate.Callbacks() {
             @Override
@@ -121,6 +119,10 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
                 .setLoadingTriggerThreshold(1)
                 .addLoadingListItem(false)
                 .build();
+
+        if (userInfoView.getValues() == null){
+            presenter.loadUserInfo();
+        }
     }
 
     @Override
@@ -140,21 +142,27 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable("user_info", userInfoView.getValues());
-        outState.putParcelableArrayList("list", (ArrayList<? extends Parcelable>) adapter.getItems());
-        outState.putBoolean("loadingInProgress",loadingInProgress);
-        outState.putBoolean("hasLoadedAllItems",hasLoadedAllItems);
-        outState.putBoolean("progressBar_showed", progressBar.isShown());
-        outState.putBoolean("noConnView_showed", noConnView.isShown());
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putParcelable("user_info", userInfoView.getValues());
+//        outState.putParcelableArrayList("list", (ArrayList<? extends Parcelable>) adapter.getItems());
+//        outState.putBoolean("loadingInProgress",loadingInProgress);
+//        outState.putBoolean("hasLoadedAllItems",hasLoadedAllItems);
+//        outState.putBoolean("progressBar_showed", progressBar.isShown());
+//        outState.putBoolean("noConnView_showed", noConnView.isShown());
+//    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         presenter.reset();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.save(userInfoView.getValues(), adapter.getItems());
     }
 
     @Override
@@ -166,7 +174,7 @@ public class UserReposActivity extends AppCompatActivity implements UserReposVie
     @Override
     public void showRepos(List<RepoEntity> userRepos) {
         if (userRepos != null){
-            if (userRepos.size() == 0 || userRepos.size() < 8){hasLoadedAllItems = true;}
+            if (userRepos.size() == 0 || userRepos.size() % 10 != 0){hasLoadedAllItems = true;}
             adapter.add(userRepos);
         }
         repoListRV.setVisibility(View.VISIBLE);

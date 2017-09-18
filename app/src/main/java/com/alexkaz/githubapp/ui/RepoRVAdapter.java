@@ -31,6 +31,7 @@ public class RepoRVAdapter extends RecyclerView.Adapter<RepoRVAdapter.UserRepoVH
 
     public void clear(){
         userRepos.clear();
+        notifyDataSetChanged();
     }
 
     @Override

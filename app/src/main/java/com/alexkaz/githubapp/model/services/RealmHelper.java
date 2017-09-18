@@ -24,4 +24,8 @@ public interface RealmHelper {
 
     void deleteAllShortUsers();
 
+    void deleteUserByName(String userName);
+
+    void deleteAllUserRepositories(UserEntity user);
+
 }

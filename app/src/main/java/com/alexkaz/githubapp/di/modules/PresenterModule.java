@@ -18,8 +18,8 @@ public class PresenterModule {
 
     @Singleton
     @Provides
-    UserReposPresenter provideUserReposPresenter(GitHubService gitHubService, ConnInfoHelper connInfoHelper){
-        return new UserReposPresenterImpl(gitHubService, connInfoHelper);
+    UserReposPresenter provideUserReposPresenter(GitHubService gitHubService, ConnInfoHelper connInfoHelper, RealmHelper realmHelper){
+        return new UserReposPresenterImpl(gitHubService, connInfoHelper, realmHelper);
     }
 
     @Singleton

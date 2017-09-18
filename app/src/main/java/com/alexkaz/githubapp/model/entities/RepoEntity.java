@@ -1,11 +1,10 @@
 package com.alexkaz.githubapp.model.entities;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.SerializedName;
 
-public class RepoEntity implements Parcelable {
+import io.realm.RealmObject;
+
+public class RepoEntity extends RealmObject {
 
     @SerializedName("id")
     private int id;
@@ -33,6 +32,8 @@ public class RepoEntity implements Parcelable {
 
     @SerializedName("language")
     private String language;
+
+    private String userName;
 
     public RepoEntity() {
     }
@@ -109,45 +110,11 @@ public class RepoEntity implements Parcelable {
         this.forksCount = forksCount;
     }
 
-    private RepoEntity(Parcel in) {
-        id = in.readInt();
-        name = in.readString();
-        fullName = in.readString();
-        description = in.readString();
-        size = in.readInt();
-        stargazersCount = in.readInt();
-        watchersCount = in.readInt();
-        forksCount = in.readInt();
-        language = in.readString();
+    public String getUserName() {
+        return userName;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(name);
-        dest.writeString(fullName);
-        dest.writeString(description);
-        dest.writeInt(size);
-        dest.writeInt(stargazersCount);
-        dest.writeInt(watchersCount);
-        dest.writeInt(forksCount);
-        dest.writeString(language);
-    }
-
-    public static final Parcelable.Creator<RepoEntity> CREATOR = new Parcelable.Creator<RepoEntity>() {
-        @Override
-        public RepoEntity createFromParcel(Parcel in) {
-            return new RepoEntity(in);
-        }
-
-        @Override
-        public RepoEntity[] newArray(int size) {
-            return new RepoEntity[size];
-        }
-    };
 }

@@ -1,16 +1,27 @@
 package com.alexkaz.githubapp.presenter;
 
+import android.util.Log;
+
+import com.alexkaz.githubapp.model.entities.RepoEntity;
+import com.alexkaz.githubapp.model.entities.UserEntity;
 import com.alexkaz.githubapp.model.services.ConnInfoHelper;
 import com.alexkaz.githubapp.model.services.GitHubService;
+import com.alexkaz.githubapp.model.services.RealmHelper;
 import com.alexkaz.githubapp.view.UserReposView;
+
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 
 public class UserReposPresenterImpl implements UserReposPresenter {
 
+    private static final int PER_PAGE = 10;
+
     private UserReposView view;
+
     private GitHubService gitHubService;
     private ConnInfoHelper helper;
+    private RealmHelper realmHelper;
 
     private String userName;
     private int page = 1;
@@ -20,9 +31,10 @@ public class UserReposPresenterImpl implements UserReposPresenter {
 
     private Disposable disposable;
 
-    public UserReposPresenterImpl(GitHubService gitHubService, ConnInfoHelper connInfoHelper) {
+    public UserReposPresenterImpl(GitHubService gitHubService, ConnInfoHelper helper, RealmHelper realmHelper) {
         this.gitHubService = gitHubService;
-        this.helper = connInfoHelper;
+        this.helper = helper;
+        this.realmHelper = realmHelper;
     }
 
     @Override
@@ -38,6 +50,7 @@ public class UserReposPresenterImpl implements UserReposPresenter {
     @Override
     public void refresh() {
         if (helper.isOnline()){
+            view.clearUpList();
             if (disposable != null ){
                 if (!disposable.isDisposed()){
                     disposable.dispose();
@@ -47,7 +60,6 @@ public class UserReposPresenterImpl implements UserReposPresenter {
                 loadUserInfo();
             }
             page = 1;
-            view.clearUpList();
             view.hideRepos();
             loadNextPage();
         } else {
@@ -60,8 +72,7 @@ public class UserReposPresenterImpl implements UserReposPresenter {
         if (helper.isOnline()){
             view.hideNoConnectionMessage();
             view.showLoading();
-            int perPage = 8;
-            disposable = gitHubService.getUserRepos(userName ,page, perPage).subscribe(repos -> {
+            disposable = gitHubService.getUserRepos(userName ,page, PER_PAGE).subscribe(repos -> {
                 repoListLoaded = true;
                 view.showRepos(repos);
                 page++;
@@ -73,6 +84,7 @@ public class UserReposPresenterImpl implements UserReposPresenter {
             }, throwable -> {
                 view.hideLoading();
                 view.showWarningMessage(throwable.getMessage());
+                throwable.printStackTrace();
             });
         } else {
             if (!userInfoLoaded && !repoListLoaded){
@@ -117,6 +129,31 @@ public class UserReposPresenterImpl implements UserReposPresenter {
         if (disposable != null ){
             if (!disposable.isDisposed()){
                 disposable.dispose();
+            }
+        }
+    }
+
+    @Override
+    public void save(UserEntity user, List<RepoEntity> repos) {
+        realmHelper.deleteAllUserRepositories(user);
+        realmHelper.saveUser(user);
+        realmHelper.saveUserRepos(user, repos);
+    }
+
+    @Override
+    public void restore() {
+        UserEntity user;
+        List<RepoEntity> repos;
+
+        user = realmHelper.getUserByName(userName);
+        if (user != null){
+            view.showUserInfo(user);
+            userInfoLoaded = true;
+            repos = realmHelper.getUserRepos(user);
+            if (!repos.isEmpty()){
+                view.showRepos(repos);
+                repoListLoaded  = true;
+                page = repos.size()/PER_PAGE + 1;
             }
         }
     }

@@ -30,13 +30,18 @@ public class RealmHelperImpl implements RealmHelper {
     @Override
     public void saveUser(UserEntity user) {
         realm.beginTransaction();
-        //realm.copyToRealm(user); // todo extend UserEntity to RealmObject
+        realm.copyToRealm(user);
         realm.commitTransaction();
     }
 
     @Override
     public void saveUserRepos(UserEntity user, List<RepoEntity> repos) {
-        // todo impl later
+        for (RepoEntity repo : repos) {
+            repo.setUserName(user.getLogin());
+        }
+        realm.beginTransaction();
+        realm.copyToRealm(repos);
+        realm.commitTransaction();
     }
 
     @Override
@@ -46,14 +51,15 @@ public class RealmHelperImpl implements RealmHelper {
 
     @Override
     public UserEntity getUserByName(String userName) {
-        // todo impl later
-        return null;
+        return realm.where(UserEntity.class).equalTo("login",userName).findFirst();
     }
 
     @Override
     public List<RepoEntity> getUserRepos(UserEntity user) {
-        // todo impl later
-        return null;
+        RealmResults<RepoEntity> repos = realm.where(RepoEntity.class)
+                                              .equalTo("userName", user.getLogin())
+                                              .findAll();
+        return realm.copyFromRealm(repos);
     }
 
     @Override
@@ -70,6 +76,20 @@ public class RealmHelperImpl implements RealmHelper {
     public void deleteAllShortUsers() {
         realm.beginTransaction();
         realm.where(ShortUserEntity.class).findAll().deleteAllFromRealm();
+        realm.commitTransaction();
+    }
+
+    @Override
+    public void deleteUserByName(String userName) {
+        realm.beginTransaction();
+        realm.where(UserEntity.class).equalTo("login",userName).findAll().deleteAllFromRealm();
+        realm.commitTransaction();
+    }
+
+    @Override
+    public void deleteAllUserRepositories(UserEntity user) {
+        realm.beginTransaction();
+        realm.where(RepoEntity.class).equalTo("userName", user.getLogin()).findAll().deleteAllFromRealm();
         realm.commitTransaction();
     }
 }
