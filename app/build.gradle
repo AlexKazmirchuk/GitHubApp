@@ -51,4 +51,7 @@ dependencies {
     implementation 'jp.wasabeef:recyclerview-animators:2.2.7'
     // picasso
     implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.google.firebase:firebase-messaging:11.0.2'
 }
+
+apply plugin: 'com.google.gms.google-services'

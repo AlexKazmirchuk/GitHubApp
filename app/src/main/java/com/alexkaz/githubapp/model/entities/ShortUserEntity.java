@@ -15,6 +15,8 @@ public class ShortUserEntity extends RealmObject {
     @SerializedName("avatar_url")
     private String avatarUrl;
 
+    private int changesCount;
+
     public ShortUserEntity() {
     }
 
@@ -42,4 +44,11 @@ public class ShortUserEntity extends RealmObject {
         this.avatarUrl = avatarUrl;
     }
 
+    public int getChangesCount() {
+        return changesCount;
+    }
+
+    public void setChangesCount(int changesCount) {
+        this.changesCount = changesCount;
+    }
 }

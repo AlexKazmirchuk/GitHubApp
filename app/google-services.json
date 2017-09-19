@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "804235975716",
+    "firebase_url": "https://githubapp-bde24.firebaseio.com",
+    "project_id": "githubapp-bde24",
+    "storage_bucket": "githubapp-bde24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:804235975716:android:4691d84148c0ecfc",
+        "android_client_info": {
+          "package_name": "com.alexkaz.githubapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "804235975716-ll72jd06cb6nhcln1u11ni4l99vfhogc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alexkaz.githubapp",
+            "certificate_hash": "af54759b57a05bcf1f219503f2ebaf4f7c80f7b1"
+          }
+        },
+        {
+          "client_id": "804235975716-6ep281b5imhee6hvpbd8184g41irlrt0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF79x3ARMEiT0PT6Na9K25TZ-NmwsKQqY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "804235975716-6ep281b5imhee6hvpbd8184g41irlrt0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,6 +21,16 @@ public class RealmHelperImpl implements RealmHelper {
     }
 
     @Override
+    public void updateShortUser(int userId, int changesCount) {
+        ShortUserEntity first = realm.where(ShortUserEntity.class).equalTo("id", userId).findFirst();
+        if (first != null){
+            realm.beginTransaction();
+            first.setChangesCount(changesCount);
+            realm.commitTransaction();
+        }
+    }
+
+    @Override
     public void saveAllUsers(List<ShortUserEntity> users) {
         realm.beginTransaction();
         realm.insert(users);

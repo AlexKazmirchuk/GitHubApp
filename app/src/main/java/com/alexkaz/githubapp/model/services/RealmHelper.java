@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface RealmHelper {
 
+    void updateShortUser(int userId, int changesCount);
+
     void saveAllUsers(List<ShortUserEntity> users);
 
     void saveUser(UserEntity user);

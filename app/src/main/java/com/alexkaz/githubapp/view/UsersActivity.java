@@ -1,9 +1,15 @@
 package com.alexkaz.githubapp.view;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +32,8 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
 public class UsersActivity extends AppCompatActivity implements UsersView {
 
+    public static final String PUSH_NOTIFICATION = "pushNotification";
+
     @Inject
     UsersPresenter presenter;
 
@@ -33,6 +41,8 @@ public class UsersActivity extends AppCompatActivity implements UsersView {
     private RecyclerView recyclerView;
     private UserRVAdapter adapter;
     private View noConnView;
+
+    private BroadcastReceiver receiver;
 
     private boolean loadingInProgress = false;
     private boolean hasLoadedAllItems = false;
@@ -43,6 +53,19 @@ public class UsersActivity extends AppCompatActivity implements UsersView {
         setContentView(R.layout.activity_users);
         ((MyApp)getApplication()).getMyComponent().inject(this);
         initComponents();
+        handleIntent(getIntent());
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent != null){
+            try {
+                int userId = Integer.parseInt(intent.getStringExtra("userId"));
+                int changesCount = Integer.parseInt(intent.getStringExtra("changesCount"));
+                adapter.updateItemChangesCount(userId, changesCount);
+            } catch (NumberFormatException e){
+                Log.d("myTag", "wrong data from server");
+            }
+        }
     }
 
     private void initComponents() {
@@ -50,9 +73,8 @@ public class UsersActivity extends AppCompatActivity implements UsersView {
         recyclerView = findViewById(R.id.recycleView);
         noConnView = findViewById(R.id.noConnLayout);
 
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new UserRVAdapter();
+        adapter = new UserRVAdapter(((MyApp)getApplication()).getMyComponent().realmHelper());
         recyclerView.setAdapter( new ScaleInAnimationAdapter( new AlphaInAnimationAdapter(adapter)));
 
         presenter.bindView(this);
@@ -82,6 +104,13 @@ public class UsersActivity extends AppCompatActivity implements UsersView {
                 .setLoadingTriggerThreshold(1)
                 .addLoadingListItem(false)
                 .build();
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                handleIntent(intent);
+            }
+        };
     }
 
     @Override
@@ -105,6 +134,18 @@ public class UsersActivity extends AppCompatActivity implements UsersView {
     public void onBackPressed() {
         super.onBackPressed();
         presenter.reset();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(PUSH_NOTIFICATION));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
     @Override

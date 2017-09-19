@@ -32,12 +32,26 @@
                 android:layout_alignParentTop="true"/>
 
             <TextView
+                android:id="@+id/changesCountTV"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/rounded_red_bg"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="20dp"
+                tools:text="0"
+                android:textColor="#ffffff"
+                android:gravity="center"/>
+
+            <TextView
                 android:id="@+id/userNameTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
                 android:textColor="#ffffff"
                 android:layout_toEndOf="@id/userPhotoIV"
+                android:layout_toStartOf="@id/changesCountTV"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="19dp"
                 android:layout_marginBottom="10dp"
