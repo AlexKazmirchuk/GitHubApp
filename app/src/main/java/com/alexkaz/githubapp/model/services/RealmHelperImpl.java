@@ -31,7 +31,7 @@ public class RealmHelperImpl implements RealmHelper {
     }
 
     @Override
-    public void saveAllUsers(List<ShortUserEntity> users) {
+    public void saveAllShortUsers(List<ShortUserEntity> users) {
         realm.beginTransaction();
         realm.insert(users);
         realm.commitTransaction();
@@ -55,7 +55,7 @@ public class RealmHelperImpl implements RealmHelper {
     }
 
     @Override
-    public List<ShortUserEntity> getAllUsers() {
+    public List<ShortUserEntity> getAllShortUsers() {
         return realm.copyFromRealm(realm.where(ShortUserEntity.class).findAll());
     }
 
@@ -73,7 +73,7 @@ public class RealmHelperImpl implements RealmHelper {
     }
 
     @Override
-    public int getLastUserID() {
+    public int getLastShortUserID() {
         RealmResults<ShortUserEntity> result = realm.where(ShortUserEntity.class).findAll();
         result = result.sort("id");
         if (result.size() >= 1)

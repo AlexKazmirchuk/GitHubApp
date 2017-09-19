@@ -46,7 +46,7 @@ public class UserReposPresenterImpl implements UserReposPresenter {
     }
 
     @Override
-    public void refresh() {
+    public void reload() {
         if (helper.isOnline()){
             view.clearUpList();
             if (disposable != null ){

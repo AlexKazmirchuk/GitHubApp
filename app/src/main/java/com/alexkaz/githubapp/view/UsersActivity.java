@@ -123,7 +123,7 @@ public class UsersActivity extends AppCompatActivity implements UsersView {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_refresh:
-                presenter.refresh();
+                presenter.reload();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

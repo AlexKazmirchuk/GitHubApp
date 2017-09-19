@@ -33,7 +33,7 @@ public class UsersPresenterImpl implements UsersPresenter {
     }
 
     @Override
-    public void refresh() {
+    public void reload() {
         if (connInfoHelper.isOnline()){
             view.clearUpList();
             reset();
@@ -60,7 +60,7 @@ public class UsersPresenterImpl implements UsersPresenter {
                 view.showWarningMessage(throwable.getMessage());
             });
         } else {
-            if (realmHelper.getAllUsers().isEmpty()){
+            if (realmHelper.getAllShortUsers().isEmpty()){
                 view.showNoConnectionMessage();
             } else {
                 view.showWarningMessage("No internet connection!");
@@ -81,14 +81,14 @@ public class UsersPresenterImpl implements UsersPresenter {
     @Override
     public void saveState(List<ShortUserEntity> users) {
         realmHelper.deleteAllShortUsers();
-        realmHelper.saveAllUsers(users);
+        realmHelper.saveAllShortUsers(users);
     }
 
     @Override
     public void restoreState() {
-        since = realmHelper.getLastUserID();
-        if (!realmHelper.getAllUsers().isEmpty()){
-            view.showUsers(realmHelper.getAllUsers());
+        since = realmHelper.getLastShortUserID();
+        if (!realmHelper.getAllShortUsers().isEmpty()){
+            view.showUsers(realmHelper.getAllShortUsers());
         } else {
             loadNextPage();
         }

@@ -10,7 +10,7 @@ public interface UserReposPresenter extends BasePresenter <UserReposView> {
 
     void setUserName(String userName);
 
-    void refresh();
+    void reload();
 
     void loadNextPage();
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UsersPresenter  extends BasePresenter <UsersView> {
 
-    void refresh();
+    void reload();
 
     void loadNextPage();
 

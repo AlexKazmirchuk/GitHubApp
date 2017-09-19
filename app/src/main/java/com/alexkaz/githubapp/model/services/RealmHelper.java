@@ -10,19 +10,19 @@ public interface RealmHelper {
 
     void updateShortUser(int userId, int changesCount);
 
-    void saveAllUsers(List<ShortUserEntity> users);
+    void saveAllShortUsers(List<ShortUserEntity> users);
 
     void saveUser(UserEntity user);
 
     void saveUserRepos(UserEntity user, List<RepoEntity> repos);
 
-    List<ShortUserEntity> getAllUsers();
+    List<ShortUserEntity> getAllShortUsers();
 
     UserEntity getUserByName(String userName);
 
     List<RepoEntity> getUserRepos(UserEntity user);
 
-    int getLastUserID();
+    int getLastShortUserID();
 
     void deleteAllShortUsers();
 
